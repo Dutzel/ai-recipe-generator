@@ -45,14 +45,14 @@ public class RecipeUiController {
 
     @PostMapping
     public String fetchRecipeUiFor(FetchRecipeData fetchRecipeData, Model model) throws Exception {
-        Recipe recipe;
+        Song song;
         try {
-            recipe = recipeService.fetchRecipeFor(fetchRecipeData.ingredients(), fetchRecipeData.isPreferAvailableIngredients(), fetchRecipeData.isPreferOwnRecipes());
+            song = recipeService.fetchRecipeFor(fetchRecipeData.ingredients(), fetchRecipeData.isPreferAvailableIngredients(), fetchRecipeData.isPreferOwnRecipes());
         } catch (Exception e) {
             log.info("Retry RecipeUiController:fetchRecipeFor after exception caused by LLM");
-            recipe = recipeService.fetchRecipeFor(fetchRecipeData.ingredients(), fetchRecipeData.isPreferAvailableIngredients(), fetchRecipeData.isPreferOwnRecipes());
+            song = recipeService.fetchRecipeFor(fetchRecipeData.ingredients(), fetchRecipeData.isPreferAvailableIngredients(), fetchRecipeData.isPreferOwnRecipes());
         }
-        model.addAttribute("recipe", recipe);
+        model.addAttribute("song", song);
         model.addAttribute("fetchRecipeData", fetchRecipeData);
         return fetchUI(model);
     }

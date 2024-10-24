@@ -10,7 +10,7 @@ It also shows how to implement advanced techniques for the adaption of foundatio
 # Setup
 ## LLM
 ### Local LLM (Ollama)
-As Ollama doesn't yet provide a text-to-image model, recipe image generation is not available with this setup.
+As Ollama doesn't yet provide a text-to-image model, song image generation is not available with this setup.
 #### Option 1
 1. Download and install Ollama on your local machine [link](https://ollama.com/)
 2. Start llama3.1 model (3.1 is the first Llama version that supports Function Calling, even if it's not working well with the 8B version)
@@ -58,7 +58,7 @@ On your local machine, a Redis database is automatically started and configured 
 ./gradlew bootRun
 ```
 Open [http://localhost:8080](http://localhost:8080) in your browser. 
-Enter the ingredients (e.g. "Potatoes") you want to find a recipe for in the form and press the "find" button.
+Enter the ingredients (e.g. "Potatoes") you want to find a song for in the form and press the "find" button.
 
 ## Function Calling 
 By checking the "Prefer available ingredients" checkbox, [Function Calling](https://docs.spring.io/spring-ai/reference/1.0/concepts.html#_function_calling) will be enabled.
@@ -66,7 +66,7 @@ As the functionalities to add always available ingredients and for the API call 
 `app.always-available-ingredients` and `app.available-ingredients-in-fridge` properties in [application.yaml](src/main/resources/application.yaml).
 
 Bacon and onions are currently configured for available ingredients in fridge.
-With the input "Potatoes", you should get a recipe with potatoes and bacon.
+With the input "Potatoes", you should get a song with potatoes and bacon.
 ![](docs/images/ui-sample-function-calling.png)
 
 ## Retrieval-Augmented Generation(RAG)
@@ -76,7 +76,7 @@ To upload your own PDF documents for recipes to the vector database, there is a 
 ```
 curl -XPOST -F "file=@$PWD/german_recipes.pdf" -F "pageBottomMargin=50" http://localhost:8080/api/v1/recipes/upload
 ```
-The sample recipe part of this repository is a potato soup. With the input "Potatoes", you should get a recipe that goes in the direction of a potato soup.
+The sample song part of this repository is a potato soup. With the input "Potatoes", you should get a song that goes in the direction of a potato soup.
 ![](docs/images/ui-sample-rag.png)
 
 # Kubernetes Deployment

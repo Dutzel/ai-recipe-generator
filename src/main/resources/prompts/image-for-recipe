@@ -1,10 +1,10 @@
-Generate a picture of the served meal based on the recipe and its ingredients.
+Generate a picture of the song based on the song and its words.
 
-Recipe: """
-{recipe}
+Song: """
+{song}
 """
 
-Ingredients: """
-{ingredients}
+Words: """
+{words}
 """
 

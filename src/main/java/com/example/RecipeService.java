@@ -1,6 +1,5 @@
 package com.example;
 
-import org.apache.commons.lang3.reflect.FieldUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.ai.chat.client.ChatClient;
@@ -8,7 +7,6 @@ import org.springframework.ai.chat.client.advisor.QuestionAnswerAdvisor;
 import org.springframework.ai.chat.prompt.PromptTemplate;
 import org.springframework.ai.image.ImageModel;
 import org.springframework.ai.image.ImagePrompt;
-import org.springframework.ai.model.function.FunctionCallingOptions;
 import org.springframework.ai.reader.pdf.PagePdfDocumentReader;
 import org.springframework.ai.reader.pdf.config.PdfDocumentReaderConfig;
 import org.springframework.ai.transformer.splitter.TokenTextSplitter;
@@ -18,7 +16,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
 
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -61,54 +58,54 @@ public class RecipeService {
         vectorStore.accept(documents);
     }
 
-    public Recipe fetchRecipeFor(List<String> ingredients, boolean preferAvailableIngredients, boolean preferOwnRecipes) {
-        Recipe recipe;
+    public Song fetchRecipeFor(List<String> ingredients, boolean preferAvailableIngredients, boolean preferOwnRecipes) {
+        Song song;
         if (!preferAvailableIngredients && !preferOwnRecipes) {
-            recipe = fetchRecipeFor(ingredients);
+            song = fetchRecipeFor(ingredients);
         } else if (preferAvailableIngredients && !preferOwnRecipes) {
-            recipe = fetchRecipeWithFunctionCallingFor(ingredients);
+            song = fetchRecipeWithFunctionCallingFor(ingredients);
         } else if (!preferAvailableIngredients && preferOwnRecipes) {
-            recipe = fetchRecipeWithRagFor(ingredients);
+            song = fetchRecipeWithRagFor(ingredients);
         } else {
-            recipe = fetchRecipeWithRagAndFunctionCallingFor(ingredients);
+            song = fetchRecipeWithRagAndFunctionCallingFor(ingredients);
         }
 
         if (imageModel.isPresent()) {
             var imagePromptTemplate = new PromptTemplate(imageForRecipePromptResource);
-            var imagePromptInstructions = imagePromptTemplate.render(Map.of("recipe", recipe.name(), "ingredients", String.join(",", recipe.ingredients())));
+            var imagePromptInstructions = imagePromptTemplate.render(Map.of("song", song.name(), "words", String.join(",", song.words())));
             var imageGeneration = imageModel.get().call(new ImagePrompt(imagePromptInstructions)).getResult();
-            return new Recipe(recipe, imageGeneration.getOutput().getUrl());
+            return new Song(song, imageGeneration.getOutput().getUrl());
         }
-        return recipe;
+        return song;
     }
 
-    private Recipe fetchRecipeFor(List<String> ingredients) {
-        log.info("Fetch recipe without additional information");
+    private Song fetchRecipeFor(List<String> words) {
+        log.info("Fetch song without additional information");
 
         return chatClient.prompt()
                 .user(us -> us
                         .text(recipeForIngredientsPromptResource)
-                        .param("ingredients", String.join(",", ingredients)))
+                        .param("words", String.join(",", words)))
                 .call()
-                .entity(Recipe.class);
+                .entity(Song.class);
     }
 
-    private Recipe fetchRecipeWithFunctionCallingFor(List<String> ingredients) {
-        log.info("Fetch recipe with additional information from function calling");
+    private Song fetchRecipeWithFunctionCallingFor(List<String> words) {
+        log.info("Fetch song with additional information from function calling");
 
         return chatClient.prompt()
                 .user(us -> us
                         .text(recipeForAvailableIngredientsPromptResource)
-                        .param("ingredients", String.join(",", ingredients)))
+                        .param("words", String.join(",", words)))
                 .functions("fetchIngredientsAvailableAtHome")
                 .call()
-                .entity(Recipe.class);
+                .entity(Song.class);
     }
 
-    private Recipe fetchRecipeWithRagFor(List<String> ingredients) {
-        log.info("Fetch recipe with additional information from vector store");
+    private Song fetchRecipeWithRagFor(List<String> words) {
+        log.info("Fetch song with additional information from vector store");
         var promptTemplate = new PromptTemplate(recipeForIngredientsPromptResource,
-                Map.of("ingredients", String.join(",", ingredients)));
+                Map.of("words", String.join(",", words)));
         var advise = new PromptTemplate(preferOwnRecipePromptResource).getTemplate();
         var advisorSearchRequest = SearchRequest.defaults().withTopK(2).withSimilarityThreshold(0.7);
 
@@ -116,21 +113,22 @@ public class RecipeService {
                 .user(promptTemplate.render())
                 .advisors(new QuestionAnswerAdvisor(vectorStore, advisorSearchRequest, advise))
                 .call()
-                .entity(Recipe.class);
+                .entity(Song.class);
     }
 
-    private Recipe fetchRecipeWithRagAndFunctionCallingFor(List<String> ingredients) {
-        log.info("Fetch recipe with additional information from vector store and function calling");
+    private Song fetchRecipeWithRagAndFunctionCallingFor(List<String> words) {
+        log.info("Fetch song with additional information from vector store and function calling");
         var promptTemplate = new PromptTemplate(recipeForAvailableIngredientsPromptResource,
-                Map.of("ingredients", String.join(",", ingredients)));
+                Map.of("words", String.join(",", words)));
         var advise = new PromptTemplate(preferOwnRecipePromptResource).getTemplate();
         var advisorSearchRequest = SearchRequest.defaults().withTopK(2).withSimilarityThreshold(0.7);
 
-        return chatClient.prompt()
+        Song availableAtHome = chatClient.prompt()
                 .user(promptTemplate.render())
                 .functions("fetchIngredientsAvailableAtHome")
                 .advisors(new QuestionAnswerAdvisor(vectorStore, advisorSearchRequest, advise))
                 .call()
-                .entity(Recipe.class);
+                .entity(Song.class);
+        return availableAtHome;
     }
 }

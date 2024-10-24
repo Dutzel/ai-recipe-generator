@@ -1,7 +1,7 @@
-If one of the following recipes includes those ingredients, provide one of these recipes unchanged!
+If one of the following songs includes those words, provide one of these songs unchanged!
 Remove any text formatting like uppercase.
 
-Recipes: """
+Songs: """
 {question_answer_context}
 """
 
