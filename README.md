@@ -1,4 +1,4 @@
-# Spring AI Recipe Finder
+# Spring AI Song Finder
 
 Demo on how easy it is to build AI-driven applications with Spring Boot and Spring AI. 
 It also shows how to implement advanced techniques for the adaption of foundation models with Function Calling and RAG.
