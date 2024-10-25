@@ -5,14 +5,17 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.ai.chat.model.ChatModel;
 import org.springframework.ai.image.ImageModel;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import static org.springframework.util.StringUtils.capitalize;
@@ -26,6 +29,7 @@ public class RecipeUiController {
     private final RecipeService recipeService;
     private final ChatModel chatModel;
     private final Optional<ImageModel> imageModel;
+    private Model lastAiModel;
 
     public RecipeUiController(RecipeService recipeService, ChatModel chatModel, Optional<ImageModel> imageModel) {
         this.recipeService = recipeService;
@@ -40,7 +44,25 @@ public class RecipeUiController {
         if (!model.containsAttribute("fetchRecipeData")) {
             model.addAttribute("fetchRecipeData", new FetchRecipeData());
         }
+        lastAiModel = model;
+
         return "index";
+    }
+
+    @GetMapping("/lastModel")
+    public ResponseEntity<MyModelDto> fetchModel() {
+        String attribute1 = (String) lastAiModel.getAttribute("aiModel");
+        String attribute2 = ((FetchRecipeData) lastAiModel.getAttribute("fetchRecipeData")).toString();
+        String attribute3 = ((Song) lastAiModel.getAttribute("song")).toString();
+
+        MyModelDto dto = new MyModelDto(attribute1, attribute2, attribute3 );
+
+        return ResponseEntity.ok(dto);
+    }
+
+    @GetMapping("/test")
+    public ResponseEntity<String> test() {
+        return ResponseEntity.ok("Test successful!"); // Rückgabe einer einfachen Nachricht als JSON
     }
 
     @PostMapping

@@ -16,4 +16,5 @@ public class RecipeFinderConfiguration {
     public ChatClient chatClient(ChatClient.Builder chatClientBuilder) {
         return chatClientBuilder.defaultSystem(fixJsonResponsePromptResource).build();
     }
+
 }

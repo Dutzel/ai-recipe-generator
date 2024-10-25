@@ -26,7 +26,9 @@ ext {
 dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-actuator'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
+	implementation 'org.springframework.boot:spring-boot-starter-security'
 	implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
+	implementation 'com.fasterxml.jackson.core:jackson-databind'
 
 	implementation 'org.springframework.ai:spring-ai-ollama-spring-boot-starter'
 	implementation 'org.springframework.ai:spring-ai-openai-spring-boot-starter'
