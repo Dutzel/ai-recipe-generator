@@ -15,14 +15,14 @@ public class SongtextController {
     }
 
     @PostMapping
-    public ResponseEntity<String> fetchSongtext(@RequestBody SongtextRequest request) {
+    public ResponseEntity<Song> fetchSongtext(@RequestBody SongtextRequest request) {
         String songtext = request.getWort();
         SongGenerationData songData = new SongGenerationData();
         songData.setIngredientsStr(songtext);
 
         Song song = this.songGeneratorService.fetchRecipeFor(songData.ingredients(), false, false);
 
-        return ResponseEntity.ok(song.toString());
+        return ResponseEntity.ok(song);
     }
 
     // Hilfsklasse für den Request

@@ -1,26 +1,27 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { TextField, Button, Typography } from '@mui/material';
+import SongDetail from './SongDetail';
 
 const SongtextErstellung = () => {
     const [wort, setWort] = useState('');
-    const [antwort, setAntwort] = useState('');
+    const [antwort, setAntwort] = useState(null); // Ändere den Typ von antwort
 
     const handleInputChange = (event) => {
         setWort(event.target.value);
     };
 
     const handleSubmit = async (event) => {
-        event.preventDefault(); // Verhindert die Standard-Formularübertragung
+        event.preventDefault();
 
         try {
             const response = await axios.post('http://localhost:8080/songtext', { wort });
             console.log('Antwort vom Server:', response.data);
-            setAntwort(response.data); // Setze die Antwort vom Server in den Zustand
-            setWort(''); // Eingabefeld nach dem Senden zurücksetzen
+            setAntwort(response.data); // Setze die Antwort direkt auf die Daten
+            setWort('');
         } catch (error) {
             console.error('Fehler beim Senden:', error);
-            setAntwort('Fehler beim Senden'); // Fehlerbehandlung
+            setAntwort(null); // Fehlerfall
         }
     };
 
@@ -40,11 +41,7 @@ const SongtextErstellung = () => {
                     Senden
                 </Button>
             </form>
-            {antwort && (
-                <Typography variant="h6" style={{ marginTop: '20px' }}>
-                    Antwort vom Server: {antwort}
-                </Typography>
-            )}
+            {antwort && <SongDetail song={antwort} />} {/* Verwende die SongDetail-Komponente */}
         </div>
     );
 };
