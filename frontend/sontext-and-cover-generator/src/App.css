@@ -1,3 +1,13 @@
+#root {
+  height: 100%; /* Setzt die Höhe des Root-Elements auf 100% */
+  display: flex; /* Flexbox für Layout */
+  flex-direction: column; /* Vertikale Ausrichtung */
+}
+html, body {
+  height: 100%; /* Setzt die Höhe des HTML- und Body-Elements auf 100% */
+  margin: 0; /* Entfernt Standardabstände */
+  font-family: Arial, sans-serif; /* Optional: Setzt die Schriftart */
+}
 .App {
   text-align: center;
 }
@@ -36,3 +46,4 @@
     transform: rotate(360deg);
   }
 }
+

@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import { TextField, Button, Typography } from '@mui/material';
 import SongDetail from './SongDetail';
+import './SongtextErstellung.css';
 
 const SongtextErstellung = () => {
     const [wort, setWort] = useState('');
@@ -27,7 +28,7 @@ const SongtextErstellung = () => {
 
     return (
         <div>
-            <Typography variant="h2">Songtext-Erstellung</Typography>
+            <Typography variant="h4">Gib ein paar Wörter für deinen Song ein</Typography>
             <form onSubmit={handleSubmit}>
                 <TextField
                     label="Gib ein Wort ein"
@@ -41,7 +42,9 @@ const SongtextErstellung = () => {
                     Senden
                 </Button>
             </form>
-            {antwort && <SongDetail song={antwort} />} {/* Verwende die SongDetail-Komponente */}
+            <div className="details-area"> {/* Scrollbarer Bereich für die SongDetails */}
+                {antwort && <SongDetail song={antwort}/>}
+            </div>
         </div>
     );
 };

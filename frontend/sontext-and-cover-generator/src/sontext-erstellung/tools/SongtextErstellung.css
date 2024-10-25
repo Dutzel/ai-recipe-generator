@@ -1,0 +1,8 @@
+.details-area {
+    max-height: 300px; /* Maximalhöhe für den scrollbaren Bereich */
+    overflow-y: auto; /* Aktiviert das vertikale Scrollen */
+    border: 1px solid #61dafb; /* Border für den Bereich */
+    border-radius: 8px; /* Abgerundete Ecken */
+    padding: 1rem; /* Padding innerhalb des Bereichs */
+    margin-top: 20px; /* Abstand zum vorherigen Inhalt */
+}
